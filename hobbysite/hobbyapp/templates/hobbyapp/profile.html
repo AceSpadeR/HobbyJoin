@@ -4,11 +4,13 @@
 <style>
 .containerImg {
     margin-top: 140px;
-    height: auto;
+    width: auto;
     background-image: linear-gradient(to bottom, transparent, white), url('{{ user_profile.secondary_pic.url }}');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
+    background-attachment: fixed;
+
 }
 
 .containerImg p, .containerImg h2, .containerImg h3, .containerImg h6, .containerImg h5, .containerImg li {
@@ -26,7 +28,7 @@
             <div class="row">
                 <div class="col-md-8">
                     <div class="profile-images">
-                        <img src="{{ user_profile.profile_pic.url }}" class="img-thumbnail primary">
+                        <img src="{{ user_profile.profile_pic.url }}" class="img-thumbnail primary" >
                     </div>
                     <h2>{{ user_profile.user.username }}</h2>
                     <hr class="border-white">
@@ -39,8 +41,11 @@
                      <br>
                      <h5 class="settings">Hobbies: {{user_profile.tags.count}}</h5>
                     <br>
-                     <a class="nav-linkbio" href="{% url 'profile' user.id %}"><h6>Edit Profile</h6></a>
-                     <a class="nav-linkbio" href="{% url 'add_post' %}"><h6>Add Post</h6></a>
+                    {% if request.user.id == user_profile.user.id %}
+                         <a class="nav-linkbio" href="{% url 'edit_profile' user.id %}"><h6>Edit Profile</h6></a>
+                         <a class="nav-linkbio" href="{% url 'add_post' %}"><h6>Add Post</h6></a>
+                    {% endif %}
+
                 </div>
 
             </div>

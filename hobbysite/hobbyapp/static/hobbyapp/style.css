@@ -71,9 +71,11 @@ p, .card-text, .card-title{
 }
 
 .Tags {
-    color: black !important;
-    text-shadow: 1px 1px white;
+    color: white !important;
+    text-shadow: 2px 2px black;
+
 }
+
 
 small.text-muted{
     color:white !important;

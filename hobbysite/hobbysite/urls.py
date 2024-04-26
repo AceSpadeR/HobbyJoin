@@ -39,6 +39,9 @@ urlpatterns = [
     path('create_chat/<int:friend_id>/', views.create_chat, name='create_chat'),
     path('chat/<int:user_id>/<int:chat_id>', views.chat_view, name='chat_view'),
     path('like/<int:post_id>/', views.like_post, name='like_post'),
+    path('profile/<int:user_id>/', views.profile_view, name='profile'),
+    path('profile/<int:user_id>/edit/', views.edit_profile_view, name='edit_profile')
+
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

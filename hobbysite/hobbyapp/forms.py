@@ -40,3 +40,8 @@ class PostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ['picture', 'caption', 'tags']
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['bio', 'profile_pic', 'secondary_pic', 'tags']

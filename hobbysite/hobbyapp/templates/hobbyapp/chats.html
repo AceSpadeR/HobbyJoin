@@ -1,50 +1,76 @@
 {% extends 'hobbyapp/base.html' %}
 
 {% block content %}
+<style>
+.containerImg {
+    margin-top: 140px;
+    width: auto;
+    background-image: linear-gradient(to bottom, transparent, white), url('{{ user_profile.secondary_pic.url }}');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
 
-<div class="container" style="margin-top: 112px;">
-    <div class="row">
-        <div class="col-10">
-            <h2>Chat</h2>
-            {% for message in messages %}
-                {% if message.user == request.user %}
-                    <div class="d-flex justify-content-start mb-4">
-                        <div class="msg_cotainer">
-                            <p class="text-white">{{ message.content }}</p>
-                            <p class="msg_time">{{ message.timestamp }}</p>
+}
+
+.containerImg p, .containerImg h2, .containerImg h3, .containerImg h6, .containerImg h5, .containerImg li {
+    color: white;
+    font-weight: bold;
+    margin: 20px;
+}
+
+</style>
+
+
+<div class="containerImg">
+    <div class="container" style="margin-top: 112px;">
+        <div class="row">
+            <div class="col-10">
+                <h2>Chat</h2>
+                {% for message in messages %}
+                    {% if message.user == request.user %}
+                        <div class="d-flex justify-content-start mb-4">
+                            <div class="msg_cotainer">
+                                <p class="text-white">{{ message.content }}</p>
+                                <p class="msg_time">{{ message.timestamp }}</p>
+                            </div>
                         </div>
-                    </div>
-                {% else %}
-                    <div class="d-flex justify-content-end mb-4">
-                        <div class="msg_cotainer_send">
-                            <p class="text-white">{{ message.content }}</p>
-                            <p class="msg_time_send">{{ message.timestamp }}</p>
-                        </div>
-                    </div>
-                {% endif %}
-            {% endfor %}
-            <form method="post">
-                {% csrf_token %}
-                <input type="text" name="message" placeholder="Type a message...">
-                <button type="submit">Send</button>
-            </form>
-        </div>
-        <div class="col-2">
-            <h2>Users</h2>
-            {% for user in users %}
-                <div class="user">
-                    <hr>
-                    <h5>{{ user.username }}</h5>
-                    {% if user.userprofile.profile_pic %}
-                        <img src="{{ user.userprofile.profile_pic.url }}" alt="{{ user.username }}'s profile picture" style="height: 70px; width: 70px; !important">
                     {% else %}
-                        <img src="{{ 'hobbysite/media/NotFound.jpg' }" alt="Default profile picture" style="height: 25px; width: 25px; !important">
+                        <div class="d-flex justify-content-end mb-4">
+                            <div class="msg_cotainer_send">
+                                <p class="text-white">{{ message.content }}</p>
+                                <p class="msg_time_send">{{ message.timestamp }}</p>
+                            </div>
+                        </div>
                     {% endif %}
+                {% endfor %}
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="text" name="message" placeholder="Type a message...">
+                    <button type="submit">Send</button>
+                </form>
+            </div>
+            <div class="col-2">
+                <h2 class="Tags">Users</h2>
+                {% for user in users %}
+                    <div class="user">
+                        <hr>
+                        <h5 class="card-title">
+                            <a href="{% url 'profile' user.id %}" style="color: Black">{{ user.username }}</a>
 
-                </div>
-            {% endfor %}
+                        </h5>
+                        <br>
+                        {% if user.userprofile.profile_pic %}
+                            <img src="{{ user.userprofile.profile_pic.url }}" alt="{{ user.username }}'s profile picture" style="height: 70px; width: 70px; !important">
+                        {% else %}
+                            <img src="{{ 'hobbysite/media/NotFound.jpg' }" alt="Default" style="height: 25px; width: 25px; !important">
+                        {% endif %}
+
+                    </div>
+                {% endfor %}
+            </div>
+
         </div>
-
     </div>
 </div>
 {% endblock %}

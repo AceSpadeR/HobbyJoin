@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from .models import UserProfile, Message, Chat, Post, FriendRequest, Tag
 from django.core.paginator import Paginator
 from django.contrib import messages
-from .forms import RegistrationForm
+from .forms import RegistrationForm, UserProfileForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseForbidden
@@ -125,6 +125,7 @@ def decline_friend_request(request, request_id):
 
 @login_required()
 def chat_view(request, user_id, chat_id):
+    user_profile = UserProfile.objects.get(user_id=user_id)
     chat = Chat.objects.get(id=chat_id)
     messages = Message.objects.filter(chat=chat)
     users = chat.users.all()
@@ -135,7 +136,7 @@ def chat_view(request, user_id, chat_id):
         new_message.save()
         return redirect('chat_view', user_id=request.user.id, chat_id=chat.id)
 
-    context = {'messages': messages, 'users': users}
+    context = {'messages': messages, 'users': users, 'user_profile': user_profile,}
     return render(request, 'hobbyapp/chats.html', context)
 
 @login_required()
@@ -166,8 +167,6 @@ def profile_view(request, user_id):
     }
     return render(request, 'hobbyapp/profile.html', context)
 
-from django.shortcuts import get_object_or_404, redirect
-
 @login_required()
 def like_post(request, post_id):
     post = get_object_or_404(Post, id=post_id)
@@ -176,3 +175,18 @@ def like_post(request, post_id):
     else:
         post.likes.add(request.user)
     return redirect('post_view')
+
+
+@login_required()
+def edit_profile_view(request, user_id):
+    user_profile = UserProfile.objects.get(user_id=user_id)
+    if request.user.id != user_id:
+        return HttpResponseForbidden("You are not allowed to edit this profile.")
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, request.FILES, instance=user_profile)
+        if form.is_valid():
+            form.save()
+            return redirect('profile', user_id=user_id)
+    else:
+        form = UserProfileForm(instance=user_profile)
+    return render(request, 'hobbyapp/edit_rofile.html', {'form': form})

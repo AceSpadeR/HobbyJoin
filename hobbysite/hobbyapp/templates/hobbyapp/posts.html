@@ -2,26 +2,26 @@
 {% extends 'hobbyapp/base.html' %}
 
 {% block content %}
-
 <style>
-    .containerImg {
-        max-height: 500px;
-        height: auto;
-        margin-top: 112px;
-        background-image: linear-gradient(to bottom, transparent, white), url('{{ user_profile.secondary_pic.url }}');
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: center;
+.containerImg {
+    margin-top: 140px;
+    width: auto;
+    background-image: linear-gradient(to bottom, transparent, white), url('{{ user_profile.secondary_pic.url }}');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
 
-    }
+}
 
-    .containerImg p, .containerImg h2, .containerImg h3, .containerImg h6, .containerImg h5, .containerImg li {
-        color: white;
-        font-weight: bold;
-        margin: 20px;
-    }
+.containerImg p, .containerImg h2, .containerImg h3, .containerImg h6, .containerImg h5, .containerImg li {
+    color: white;
+    font-weight: bold;
+    margin: 20px;
+}
 
 </style>
+
 
 <div class="container">
     <div class="row">
@@ -43,7 +43,9 @@
                             <div class="card">
                                 <img src="{{ post.picture.url }}" class="card-img-top">
                                 <div class="card-body">
-                                    <h5 class="card-title">{{post.user.username }} </h5>
+                                    <h5 class="card-title">
+                                        <a href="{% url 'profile' post.user.id %}" style="color: white">{{ post.user.username }}</a>
+                                    </h5>
                                     <hr>
                                     <form method="POST" action="{% url 'like_post' post.id %}">
                                         {% csrf_token %}
