@@ -1,0 +1,78 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Your Django Project</title>
+
+    <link rel="stylesheet" href="{% static 'hobbyapp/style.css' %}">
+    <link href="{% static 'hobbyapp/bootstrap.min.css' %}" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark" style="position: fixed; z-index:1; width:100%;">
+        <a class="navbar-brand" href="{% url 'post_view'%}">
+            <img src="{% static 'hobbyapp/Join.png' %}" alt="Logo" width="90" height="50">
+        </a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'add_friend' user.id  %}">Add Friend</a>
+                </li>
+                <li class="nav-item">
+                     <a class="nav-link" href="{% url 'post_view' %}">Posts</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'profile' user.id   %}">Profile</a>
+                </li>
+            </ul>
+                <a href="{% url 'logout' %}" class="nav-link">Logout</a>
+        </div>
+    </nav>
+    {% if messages %}
+        {% with messages.last as last_message %}
+            <div class="alert alert-{{ last_message.tags }}" style="position: fixed; z-index:1; margin-top:100px;">
+                {{ last_message }}
+            </div>
+        {% endwith %}
+    {% endif %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-2 d-none d-lg-block">
+                <div style="position: fixed; z-index:1; margin-top: 150px";>
+                    <div class="list-group" style="background: black; padding-top: 8px">
+                    <h4 style="color: white; text-align: center">Chats</h4>
+
+                    </div>
+
+                    <hr>
+                    <h4>Search</h4>
+                    <input type="search" placeholder="Search friends">
+                    <ul>
+                        {% for friend in user_profile.friends.all %}
+                            <li><a href="{% url 'create_chat' friend.user.id %}">{{ friend.user.username }}</a></li>
+
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="col-10">
+
+                {% block content %}
+                {% endblock %}
+
+            </div>
+        </div>
+    </div>
+    <script>
+        setTimeout(function() {
+            var alerts = document.getElementsByClassName('alert');
+            for(var i = 0; i < alerts.length; i++){
+                alerts[i].style.display = 'none';
+            }
+        }, 2000);
+    </script>
+</body>
+</html>

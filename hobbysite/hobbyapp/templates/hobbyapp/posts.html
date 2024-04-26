@@ -1,0 +1,84 @@
+
+{% extends 'hobbyapp/base.html' %}
+
+{% block content %}
+
+<style>
+    .containerImg {
+        max-height: 500px;
+        height: auto;
+        margin-top: 112px;
+        background-image: linear-gradient(to bottom, transparent, white), url('{{ user_profile.secondary_pic.url }}');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+
+    }
+
+    .containerImg p, .containerImg h2, .containerImg h3, .containerImg h6, .containerImg h5, .containerImg li {
+        color: white;
+        font-weight: bold;
+        margin: 20px;
+    }
+
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="containerImg">
+
+            <div class="col-md-9">
+                <div id="tag-container" style="position: fixed; z-index:1; margin-left:30px;">
+                    <form action="" method="GET">
+                        <input type="search" name="tag" id="tag-input" list="tag-list" placeholder="Filter Posts...">
+                        <datalist id="tag-list"> </datalist>
+
+                    </form>
+
+                </div>
+            <br>
+                <div class="row">
+                    {% for post in posts_objects %}
+                        <div class="col-lg-6 col-md-12">
+                            <div class="card">
+                                <img src="{{ post.picture.url }}" class="card-img-top">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{post.user.username }} </h5>
+                                    <hr>
+                                    <form method="POST" action="{% url 'like_post' post.id %}">
+                                        {% csrf_token %}
+                                        {% if user in post.likes.all %}
+                                            <button type="submit" name="post_id" value="{{ post.id }}" class="btn btn-danger">Unlike</button>
+                                        {% else %}
+                                            <button type="submit" name="post_id" value="{{ post.id }}" class="btn btn-outline-info">Like</button>
+                                        {% endif %}
+                                        <span>{{ post.likes.count }} Likes</span>
+                                    </form>
+                                    <p class="card-text">
+                                        <p>{{ post.caption }}</p>
+                                        <small class="text-muted">Posted on {{ post.post_time }}</small>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                </div>
+                {% if posts_objects.has_previous %}
+                 <a href="?page=1">Top</a>
+                 <a href="?page={{posts_objects.previous_page_number}}">/\</a>
+
+                {% endif %}
+                {% if posts_objects.has_next %}
+                 <a href="?page={{posts_objects.next_page_number}}">\/</a>
+                {% endif %}
+                Page: {{posts_objects.number }} of {{posts_objects.paginator.num_pages }}
+            </div>
+
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,93 @@
+
+
+.profile-images {
+    display: flex;
+}
+
+.profile-images img {
+    margin-left: 30px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    width: 200px;
+}
+
+.navbar-brand img {
+    margin-left: 20px;
+    size:auto;
+}
+
+nav {
+    margin-bottom: 10px;
+}
+
+.nav-linkbio {
+    color: grey !important;
+    text-align: Right !important;
+    margin-right: 100px !important;
+}
+
+.tag-box {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0;
+    list-style: none;
+}
+
+.tag-item {
+    background-color: black;
+    padding: 10px;
+    margin-left: 30px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+}
+
+.bio-item {
+    background-color: black;
+    padding: 10px;
+    margin-left: 30px;
+    margin-top: 15px !important;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+
+}
+
+.space {
+    margin-top:150px;
+}
+
+
+.card-body{
+    background-color: black !important;
+}
+
+p, .card-text, .card-title{
+    color: white !important;
+}
+
+.settings {
+    text-align: Right !important;
+    margin-right: 50px !important;
+}
+
+.Tags {
+    color: black !important;
+    text-shadow: 1px 1px white;
+}
+
+small.text-muted{
+    color:white !important;
+}
+
+
+.msg_time {
+     font-size: 10px !important;
+}
+
+.msg_time_send {
+     font-size: 10px !important;
+}
+
+.msg_cotainer {
+    background-color: dimgray;
+}
