@@ -93,3 +93,7 @@ small.text-muted{
 .msg_cotainer {
     background-color: dimgray;
 }
+
+.msg_cotainer_send {
+    background-color: dimgray;
+}

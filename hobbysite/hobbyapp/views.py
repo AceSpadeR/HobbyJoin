@@ -1,4 +1,6 @@
 from django.contrib.auth.models import User
+from django.db.models import Count
+
 from .models import UserProfile, Message, Chat, Post, FriendRequest, Tag
 from django.core.paginator import Paginator
 from django.contrib import messages
@@ -59,6 +61,7 @@ def add_post(request):
 
 @login_required
 def add_friend(request, user_id):
+    user_profile = UserProfile.objects.get(user_id=user_id)
     if request.method == 'POST':
         user = User.objects.get(id=user_id)
         friend_request, created = FriendRequest.objects.get_or_create(
@@ -89,7 +92,13 @@ def add_friend(request, user_id):
                 user.status = 'P'
             else:
                 user.status = 'N'
-        return render(request, 'hobbyapp/addfriend.html', {'users': users, 'friend_requests': friend_requests, 'sent_requests': sent_requests, 'received_requests': received_requests, 'request_status': request_status})
+        context = { 'user_profile': user_profile,
+                    'users': users,
+                   'friend_requests': friend_requests,
+                   'sent_requests': sent_requests,
+                   'received_requests': received_requests,
+                   'request_status': request_status}
+        return render(request, 'hobbyapp/addfriend.html', context)
 
 
 @login_required()
@@ -139,23 +148,16 @@ def chat_view(request, user_id, chat_id):
     context = {'messages': messages, 'users': users, 'user_profile': user_profile,}
     return render(request, 'hobbyapp/chats.html', context)
 
+
 @login_required()
 def create_chat(request, friend_id):
     friend = User.objects.get(id=friend_id)
-    chats = Chat.objects.filter(users__in=[request.user, friend])
-    chat = None
-
-    for c in chats:
-        if c.users.count() == 2:
-            chat = c
-            break
-
+    chats = Chat.objects.annotate(user_count=Count('users'))
+    chat = chats.filter(users__in=[request.user, friend], user_count=2).first()
     if chat is None:
         chat = Chat.objects.create()
         chat.users.add(request.user, friend)
-
     return redirect('chat_view', user_id=request.user.id, chat_id=chat.id)
-
 
 @login_required()
 def profile_view(request, user_id):
@@ -189,4 +191,4 @@ def edit_profile_view(request, user_id):
             return redirect('profile', user_id=user_id)
     else:
         form = UserProfileForm(instance=user_profile)
-    return render(request, 'hobbyapp/edit_rofile.html', {'form': form})
+    return render(request, 'hobbyapp/editProfile.html', {'form': form})
