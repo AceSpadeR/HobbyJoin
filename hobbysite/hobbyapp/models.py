@@ -16,10 +16,6 @@ def profile_pic_directory_path(instance, filename):
     extension = os.path.splitext(filename)[1]
     return 'user_{0}/{1}{2}'.format(instance.user.id, 'profile_pic', extension)
 
-def secondary_pic_directory_path(instance, filename):
-    extension = os.path.splitext(filename)[1]
-    return 'user_{0}/{1}{2}'.format(instance.user.id, 'secondary_pic', extension)
-
 class Tag(models.Model):
     name = models.CharField(max_length=100)
 
@@ -34,10 +30,7 @@ class UserProfile(models.Model):
         upload_to=profile_pic_directory_path,
         default='hobbysite/media/NotFound.jpg'
     )
-    secondary_pic = models.ImageField(
-        upload_to=secondary_pic_directory_path,
-        default='hobbysite/media/NotFound.jpg'
-    )
+    color = models.CharField(max_length=7, default='#FFFFFF')
     bio = models.TextField()
     tags = models.ManyToManyField(Tag, blank=True)
     friends = models.ManyToManyField('self', blank=True, related_name='friends')
@@ -45,8 +38,6 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return self.user.username
-
-
 
     def accept_friend_request(self, friend_request):
         if friend_request.to_user == self.user and friend_request.status == FriendRequest.PENDING:
@@ -71,8 +62,6 @@ class Chat(models.Model):
     users = models.ManyToManyField(User)
     name = models.CharField(max_length=255, null=True, blank=True)
 
-    def __str__(self):
-        return self.name
 
 class Message(models.Model):
     chat = models.ForeignKey(Chat, on_delete=models.CASCADE)

@@ -5,7 +5,7 @@ from .models import UserProfile, Tag, Post
 
 class RegistrationForm(UserCreationForm):
     profile_pic = forms.ImageField(required=False)
-    secondary_pic = forms.ImageField(required=False)
+    color = forms.CharField(widget=forms.TextInput(attrs={'type': 'color'}), required=False)
     bio = forms.CharField(widget=forms.Textarea, required=False)
     tags = forms.ModelMultipleChoiceField(
         queryset=Tag.objects.all(),
@@ -14,7 +14,7 @@ class RegistrationForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'password1', 'password2', 'profile_pic', 'secondary_pic', 'bio', 'tags']
+        fields = ['username', 'first_name', 'last_name', 'password1', 'password2', 'profile_pic', 'color', 'bio', 'tags']
 
     def save(self, commit=True):
         user = super(RegistrationForm, self).save(commit=False)
@@ -25,8 +25,7 @@ class RegistrationForm(UserCreationForm):
             profile.bio = self.cleaned_data['bio']
             if 'profile_pic' in self.files:
                 profile.profile_pic = self.files['profile_pic']
-            if 'secondary_pic' in self.files:
-                profile.secondary_pic = self.files['secondary_pic']
+            profile.color = self.cleaned_data.get('color', '#FFFFFF')
             profile.save()
             profile.tags.set(self.cleaned_data['tags'])
         return user
@@ -42,6 +41,7 @@ class PostForm(forms.ModelForm):
         fields = ['picture', 'caption', 'tags']
 
 class UserProfileForm(forms.ModelForm):
+    color = forms.CharField(widget=forms.TextInput(attrs={'type': 'color'}), required=False)
     class Meta:
         model = UserProfile
-        fields = ['bio', 'profile_pic', 'secondary_pic', 'tags']
+        fields = ['bio', 'profile_pic', 'color', 'tags']
