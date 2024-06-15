@@ -17,7 +17,7 @@
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'add_friend' user.id  %}">Add Friend</a>
+                    <a class="nav-link" href="{% url 'add_friend' %}">Add Friend</a>
                 </li>
                 <li class="nav-item">
                      <a class="nav-link" href="{% url 'post_view' %}">Posts</a>
@@ -51,10 +51,12 @@
                     <h4>Search</h4>
                     <input type="search" placeholder="Search friends">
                     <ul>
-                        {% for friend in user_profile.friends.all %}
-                            <li><a href="{% url 'create_chat' friend.user.id %}">{{ friend.user.username }}</a></li>
+{% for friend in user_profile.friends.all %}
+    {% if friend.user != request.user %}
+        <li><a href="{% url 'create_chat' friend.user.id %}">{{ friend.user.username }}</a></li>
+    {% endif %}
+{% endfor %}
 
-                        {% endfor %}
                     </ul>
                 </div>
             </div>

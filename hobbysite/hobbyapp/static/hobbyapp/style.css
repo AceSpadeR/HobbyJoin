@@ -1,10 +1,7 @@
 
 
-.profile-images {
-    display: flex;
-}
 
-.profile-images img {
+.profile-image img {
     margin-left: 30px;
     margin-top: 20px;
     margin-bottom: 20px;
@@ -33,13 +30,11 @@ nav {
     list-style: none;
 }
 
-.tag-item {
+.bio-item {
     background-color: black;
-    padding: 10px;
-    margin-left: 30px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    border: 1px solid #ddd;
+    color: white;
+    padding: 15px;
+    margin: 0 auto;
 }
 
 .bio-item {
@@ -56,9 +51,13 @@ nav {
     margin-top:150px;
 }
 
+.card{
+        border-color: #8d8d8d !important;
+}
 
 .card-body{
     background-color: black !important;
+
 }
 
 p, .card-text, .card-title{
@@ -70,7 +69,8 @@ p, .card-text, .card-title{
     margin-right: 50px !important;
 }
 
-.Tags {
+
+.tagLabel{
     color: white !important;
     text-shadow: 2px 2px black;
 
@@ -97,3 +97,18 @@ small.text-muted{
 .msg_cotainer_send {
     background-color: dimgray;
 }
+
+.containerImg {
+    padding-top: 135px;
+    margin-left:30px;
+    width: auto;
+    background-size: cover;
+    min-height: 100vh;
+}
+
+.containerImg p, .containerImg h2, .containerImg h3, .containerImg h6, .containerImg h5, .containerImg li {
+    color: white;
+    font-weight: bold;
+    margin: 20px;
+}
+

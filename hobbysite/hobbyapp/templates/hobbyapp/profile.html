@@ -3,22 +3,8 @@
 {% block content %}
 <style>
 .containerImg {
-    margin-top: 140px;
-    width: auto;
     background-color: {{ user_profile.color }};
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-attachment: fixed;
-
 }
-
-.containerImg p, .containerImg h2, .containerImg h3, .containerImg h6, .containerImg h5, .containerImg li {
-    color: white;
-    font-weight: bold;
-    margin: 20px;
-}
-
 </style>
 
 
@@ -27,7 +13,7 @@
         <div class="col-md-11 bio-item">
             <div class="row">
                 <div class="col-md-8">
-                    <div class="profile-images">
+                    <div class="profile-image">
                         <img src="{{ user_profile.profile_pic.url }}" class="img-thumbnail primary" >
                     </div>
                     <h2>{{ user_profile.user.username }}</h2>
@@ -45,44 +31,41 @@
                          <a class="nav-linkbio" href="{% url 'edit_profile' user.id %}"><h6>Edit Profile</h6></a>
                          <a class="nav-linkbio" href="{% url 'add_post' %}"><h6>Add Post</h6></a>
                     {% endif %}
-
                 </div>
-
             </div>
         </div>
     </div>
 
 
-
-    <div class="row">
-
-        <div class="col-md-9">
-            {% for post in user.post_set.all %}
-                <div class="card lg-3">
-                    <img src="{{ post.picture.url }}" class="card-img-top">
-                    <div class="card-body">
-                        <h5 class="card-title">Likes:{{post.likes.count}}</h5>
-                        <p class="card-text">
-                            <p>{{ post.caption }}</p>
-                            <small class="text-muted">Posted on {{ post.post_time }}</small>
-                        </p>
+ <div class="row">
+        <div class="col-md-11 bio-item">
+            <div class="row">
+                <div class="col-md-8">
+                    <h2>Posts</h2>
+                {% for post in user.post_set.all %}
+                    <div class="card lg-3">
+                        <img src="{{ post.picture.url }}" class="card-img-top">
+                        <div class="card-body">
+                            <h5 class="card-title">Likes:{{post.likes.count}}</h5>
+                            <p class="card-text">
+                                <p>{{ post.caption }}</p>
+                                <small class="text-muted">Posted on {{ post.post_time }}</small>
+                            </p>
+                        </div>
                     </div>
-                </div>
             {% endfor %}
+                </div>
+                <div class="col-md-4">
+                <h2 class="tagLabel">Tags</h2>
+                    <hr>
+                    <ul class="tag-box">
+                        {% for tag in user_profile.tags.all %}
+                            <li class="tag-item">{{ tag.name }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
         </div>
-
-        <div class="col-md-3">
-
-
-            <h2 class="Tags">Tags</h2>
-            <ul class="tag-box">
-                {% for tag in user_profile.tags.all %}
-                    <li class="tag-item">{{ tag.name }}</li>
-                {% endfor %}
-            </ul>
-
-        </div>
-
     </div>
 </div>
 {% endblock %}

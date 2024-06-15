@@ -60,10 +60,10 @@ def add_post(request):
     return render(request, 'hobbyapp/addpost.html', {'form': form})
 
 @login_required
-def add_friend(request, user_id):
-    user_profile = UserProfile.objects.get(user_id=user_id)
+def add_friend(request):
+    user_profile = UserProfile.objects.get(user=request.user)
     if request.method == 'POST':
-        user = User.objects.get(id=user_id)
+        user = User.objects.get(id=request.user)
         friend_request, created = FriendRequest.objects.get_or_create(
             from_user=request.user,
             to_user=user)
@@ -108,7 +108,7 @@ def send_friend_request(request, user_id):
         friend_request, created = FriendRequest.objects.get_or_create(
             from_user=request.user,
             to_user=user)
-        return redirect('add_friend', user_id=user_id)
+        return redirect('add_friend')
 
 
 @login_required()
