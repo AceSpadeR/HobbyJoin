@@ -15,17 +15,16 @@
 
             <div class="col-md-9">
                 <div id="tag-container" style="position: fixed; z-index:1; margin-left:30px;">
-                    <form action="" method="GET">
-                        <input type="search" name="tag" id="tag-input" list="tag-list" placeholder="Filter Posts...">
+                    <form action="" method="GET" class="d-flex">
+                        <input class="form-control me-sm-2" type="search" name="tag" id="tag-input" list="tag-list" placeholder="Filter Posts...">
+                        <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
                         <datalist id="tag-list"> </datalist>
-
                     </form>
 
                 </div>
-            <br>
-                <div class="row">
+                <div class="row" style="margin-top: 60px">
                     {% for post in posts_objects %}
-                        <div class="col-lg-6 col-md-12">
+                        <div class="col-12">
                             <div class="card">
                                 <img src="{{ post.picture.url }}" class="card-img-top">
                                 <div class="card-body">
@@ -49,23 +48,22 @@
                                 </div>
                             </div>
                         </div>
+                    <hr>
                     {% endfor %}
                 </div>
-
-                </div>
+            </div>
+            <div style="margin-bottom: 20px; margin-right: 20px;">
                 {% if posts_objects.has_previous %}
-                 <a href="?page=1">Top</a>
-                 <a href="?page={{posts_objects.previous_page_number}}">/\</a>
+                 <a class="page-link" href="?page=1">Top</a>
+                 <a class="page-link" href="?page={{posts_objects.previous_page_number}}">/\</a>
 
                 {% endif %}
                 {% if posts_objects.has_next %}
-                 <a href="?page={{posts_objects.next_page_number}}">\/</a>
+                 <a class="page-link" href="?page={{posts_objects.next_page_number}}">\/</a>
                 {% endif %}
                 Page: {{posts_objects.number }} of {{posts_objects.paginator.num_pages }}
-            </div>
-
+             </div>
         </div>
-
     </div>
 </div>
 {% endblock %}

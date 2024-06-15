@@ -51,12 +51,10 @@
                     <h4>Search</h4>
                     <input type="search" placeholder="Search friends">
                     <ul>
-{% for friend in user_profile.friends.all %}
-    {% if friend.user != request.user %}
-        <li><a href="{% url 'create_chat' friend.user.id %}">{{ friend.user.username }}</a></li>
-    {% endif %}
-{% endfor %}
+                        {% for friend in user_profile.friends.all %}
+                            <li><a href="{% url 'create_chat' friend.user.id %}">{{ friend.user.username }}</a></li>
 
+                        {% endfor %}
                     </ul>
                 </div>
             </div>

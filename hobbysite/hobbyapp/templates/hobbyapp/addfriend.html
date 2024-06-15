@@ -1,47 +1,57 @@
 {% extends 'hobbyapp/base.html' %}
 
 {% block content %}
-<div class="container" style="margin-top: 112px; margin-left:30px;">
-    <div class="row">
-        <div class="col-md-6">
-            <h2>Search For Friends!</h2>
-            <form action="" method="GET">
-                <input type="search" name="username" class="form-control" placeholder="Search users">
-                <button type="submit" class="btn btn-primary">Search</button>
-            </form>
-        <ul class="list-group mt-3">
-        {% for user in users %}
-            <li class="list-group-item">
-                {{ user.username }}
-                {% if user.status == 'A' %}
-                    <h6 class="float-right">Already friends</h6>
-                {% elif user.status == 'P' %}
-                    <h6 class="float-right">Friend request pending</h6>
-                {% elif user.status == 'D' %}
-                    <h6 class="float-right">Friend request denied</h6>
-                {% else %}
-                    <a href="{% url 'send_friend_request' user.id %}" class="btn btn-primary float-right">Add Friend</a>
-                {% endif %}
-            </li>
-        {% endfor %}
-        </ul>
-        </div>
+<style>
+.containerImg {
+    background-color: {{ user_profile.color }};
+}
+</style>
+<div class="containerImg">
+    <div class="container" style="margin-top: 10px; margin-left:30px;">
+        <div class="row">
+            <div class="col-md-6">
+                <h3 class="h_Add_Friend" >Search For Friends!</h3>
+                <form action="" method="GET">
+                    <input type="search" name="username" class="form-control" placeholder="Search users">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </form>
+           <ul class="list-group mt-3">
+                {% for user in users %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ user.username }}
+                        <div>
+                            {% if user.status == 'A' %}
+                                <span class="badge badge-secondary">Already friends</span>
+                            {% elif user.status == 'P' %}
+                                <span class="badge badge-warning">Friend request pending</span>
+                            {% elif user.status == 'D' %}
+                                <span class="badge badge-danger">Friend request denied</span>
+                            {% else %}
+                                <a href="{% url 'send_friend_request' user.id %}" class="btn btn-info">+ Add Friend</a>
+                            {% endif %}
+                        </div>
+                    </li>
+                {% endfor %}
+           </ul>
 
-        <div class="col-md-6">
-            <h2>Friend Requests</h2>
-            {% if friend_requests %}
-                <ul class="list-group">
-                    {% for friend_request in friend_requests %}
-                        <li class="list-group-item">
-                            {{ friend_request.from_user.username }}
-                            <a href="{% url 'accept_friend_request' friend_request.id %}" class="btn btn-success float-right ml-2">Accept</a>
-                            <a href="{% url 'decline_friend_request' friend_request.id %}" class="btn btn-danger float-right">Decline</a>
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <h3>No friend requests at this time...</h3>
-            {% endif %}
+            </div>
+
+            <div class="col-md-6">
+                <h3 class="h_Add_Friend"> Friend Requests</h3>
+                {% if friend_requests %}
+                    <ul class="list-group">
+                        {% for friend_request in friend_requests %}
+                            <li class="list-group-item">
+                                {{ friend_request.from_user.username }}
+                                <a href="{% url 'accept_friend_request' friend_request.id %}" class="btn btn-success float-right ml-2">Accept</a>
+                                <a href="{% url 'decline_friend_request' friend_request.id %}" class="btn btn-danger float-right">Decline</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <h5 class="h_Add_Friend">No friend requests at this time...</h5>
+                {% endif %}
+            </div>
         </div>
     </div>
 </div>

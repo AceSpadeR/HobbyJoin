@@ -61,44 +61,37 @@ def add_post(request):
 
 @login_required
 def add_friend(request):
-    user_profile = UserProfile.objects.get(user=request.user)
-    if request.method == 'POST':
-        user = User.objects.get(id=request.user)
-        friend_request, created = FriendRequest.objects.get_or_create(
-            from_user=request.user,
-            to_user=user)
-        return redirect(request.META.get('HTTP_REFERER'))
+    username = request.GET.get('username')
+    if username:
+        users = User.objects.filter(username__icontains=username).exclude(id=request.user.id)
     else:
-        username = request.GET.get('username')
-        if username:
-            users = User.objects.filter(username__icontains=username).exclude(id=request.user.id)
+        users = User.objects.all().exclude(id=request.user.id)
+    friend_requests = FriendRequest.objects.filter(to_user=request.user, status=FriendRequest.PENDING)
+    sent_requests = request.user.sent_requests.all()
+    received_requests = request.user.received_requests.all()
+    all_requests = list(sent_requests) + list(received_requests)
+    request_status = {req.to_user.id if req.from_user == request.user else req.from_user.id: req.status for req in all_requests}
+    current_user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+    sent_request_ids = sent_requests.values_list('to_user__id', flat=True)
+    received_request_ids = received_requests.values_list('from_user__id', flat=True)
+    for user in users:
+        user_profile, created = UserProfile.objects.get_or_create(user=user)
+        if user_profile in current_user_profile.friends.all() or current_user_profile in user_profile.friends.all():
+            user.status = 'A'
+        elif user.id in sent_request_ids:
+            user.status = 'P'
+        elif user.id in received_request_ids:
+            user.status = 'P'
         else:
-            users = User.objects.all().exclude(id=request.user.id)
-        friend_requests = FriendRequest.objects.filter(to_user=request.user, status=FriendRequest.PENDING)
-        sent_requests = request.user.sent_requests.all()
-        received_requests = request.user.received_requests.all()
-        all_requests = list(sent_requests) + list(received_requests)
-        request_status = {req.to_user.id if req.from_user == request.user else req.from_user.id: req.status for req in all_requests}
-        current_user_profile, created = UserProfile.objects.get_or_create(user=request.user)
-        sent_request_ids = sent_requests.values_list('to_user__id', flat=True)
-        received_request_ids = received_requests.values_list('from_user__id', flat=True)
-        for user in users:
-            user_profile, created = UserProfile.objects.get_or_create(user=user)
-            if user_profile in current_user_profile.friends.all() or current_user_profile in user_profile.friends.all():
-                user.status = 'A'
-            elif user.id in sent_request_ids:
-                user.status = 'P'
-            elif user.id in received_request_ids:
-                user.status = 'P'
-            else:
-                user.status = 'N'
-        context = { 'user_profile': user_profile,
-                    'users': users,
-                   'friend_requests': friend_requests,
-                   'sent_requests': sent_requests,
-                   'received_requests': received_requests,
-                   'request_status': request_status}
-        return render(request, 'hobbyapp/addfriend.html', context)
+            user.status = 'N'
+    context = { 'user_profile': current_user_profile,
+                'users': users,
+               'friend_requests': friend_requests,
+               'sent_requests': sent_requests,
+               'received_requests': received_requests,
+               'request_status': request_status}
+    return render(request, 'hobbyapp/addfriend.html', context)
+
 
 
 @login_required()
@@ -119,7 +112,7 @@ def accept_friend_request(request, request_id):
         from_user_profile = UserProfile.objects.get(user=friend_request.from_user)
         to_user_profile.friends.add(from_user_profile)
         friend_request.delete()
-        return redirect('add_friend', user_id=request.user.id)
+        return redirect('add_friend')
     else:
         return HttpResponse("You can't accept a friend request that isn't yours.")
 
@@ -128,7 +121,7 @@ def decline_friend_request(request, request_id):
     friend_request = FriendRequest.objects.get(id=request_id)
     if friend_request.to_user == request.user:
         friend_request.delete()
-        return redirect('add_friend', user_id=request.user.id)
+        return redirect('add_friend')
     else:
         return HttpResponse("You can't decline a friend request that isn't yours.")
 
@@ -149,15 +142,16 @@ def chat_view(request, user_id, chat_id):
     return render(request, 'hobbyapp/chats.html', context)
 
 
+
 @login_required()
 def create_chat(request, friend_id):
     friend = User.objects.get(id=friend_id)
-    chats = Chat.objects.annotate(user_count=Count('users'))
-    chat = chats.filter(users__in=[request.user, friend], user_count=2).first()
+    chat = Chat.objects.filter(users__in=[request.user, friend]).annotate(user_count=Count('users')).filter(user_count=2).first()
     if chat is None:
         chat = Chat.objects.create()
         chat.users.add(request.user, friend)
     return redirect('chat_view', user_id=request.user.id, chat_id=chat.id)
+
 
 @login_required()
 def profile_view(request, user_id):
